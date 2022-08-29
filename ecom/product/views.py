@@ -1,5 +1,9 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
+from accounts.models import Cart
 from .models import Product, Category
+from django.http import HttpResponseRedirect, HttpResponse
+
 
 # Create your views here.
 
@@ -17,3 +21,13 @@ def get_products(request, slug):
         return render(request, 'product/product.html', context = context)
     except Exception as e:
         print(e)
+        
+        
+def add_to_cart(request, slug):
+    variant = request.GET.get('variant')
+    product = Product.objects.get(slug=slug)
+    user = request.user
+    cart, _ = Cart.objects.get_or_create(user=user, is_paid=False)
+    
+    
+    return HttpResponseRedirect(request.path_info)
